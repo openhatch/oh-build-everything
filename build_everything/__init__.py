@@ -22,7 +22,7 @@ def validate_contains(contains_section):
     return False
 
 def execute_rules():
-    data = yaml.load('rules.yaml')
+    data = yaml.load(open('rules.yaml'))
     for rule in data:
         name = rule.keys()[0]
         print "trying", name
