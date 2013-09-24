@@ -5,3 +5,6 @@ include/
 lib/
 local/
 tmp_build_*
+build/
+dist/
+share/
