@@ -8,5 +8,10 @@ setup(
     long_description=open('README').read(),
     install_requires=[
         'sh',
+        'PyYAML',
         ],
+    entry_points = {
+        'console_scripts': [
+            'build_one = build_everything:build_one_main',
+            ]},
     )

@@ -4,6 +4,7 @@ import re
 import os
 import yaml
 import types
+import sys
 
 
 def strings_or_list(o):
@@ -41,3 +42,9 @@ def build_one(git_url, project_name):
     os.chdir(tmp_dir_name)
     execute_rules()
 
+def build_one_main(argv=None):
+    if argv is None:
+        argv = sys.argv[1:]
+    git_url, project_name = argv
+
+    build_one(git_url, project_name)
