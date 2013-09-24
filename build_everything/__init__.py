@@ -52,7 +52,11 @@ def execute_rules(print_output, project_name):
             do_execute(rule[name][1],
                        project_name=project_name,
                        print_output=print_output)
-
+        if len(rule[name]) >= 3:
+            success = rule[name][2]
+            if success.keys() == ['success']:
+                assert success['success'] == ['no crash']
+                return True
 
 def build_one(git_url, project_name, print_output=False):
     project_name_sanitized = re.sub(r'[^a-zA-Z]', '', project_name)
@@ -64,7 +68,9 @@ def build_one(git_url, project_name, print_output=False):
     process = sh.git('clone', git_url, tmp_dir_name, **helpers.add_printing_args(print_output))
     process.wait()
     with helpers.pushd(tmp_dir_name):
-        execute_rules(print_output, project_name)
+        retval = execute_rules(print_output, project_name)
+        if retval:
+            return
 
 def build_one_main(argv=None):
     if argv is None:
