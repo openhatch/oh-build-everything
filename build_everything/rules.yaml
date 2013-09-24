@@ -29,13 +29,13 @@
   - contains: setup.py
   - execute:
     - sudo apt-get install python-virtualenv
-    - virtualenv .
+    - virtualenv --system-site-packages .
     - bin/python setup.py develop
 - other virtualenv rule:
    - contains: requirements.txt
    - execute:
        - sudo apt-get install python-virtualenv
-       - virtualenv .
+       - virtualenv --system-site-packages .
        - bin/pip install -r requirements.txt
 - Django web app rule:
   - contains: "**/manage.py"
