@@ -6,4 +6,7 @@ setup(
     packages=['build_everything'],
     license='CC zero',
     long_description=open('README').read(),
-)
+    install_requires=[
+        'sh',
+        ],
+    )
