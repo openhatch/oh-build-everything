@@ -5,6 +5,7 @@ import os
 import yaml
 import types
 import sys
+from . import helpers
 
 
 def strings_or_list(o):
@@ -32,7 +33,8 @@ def do_execute(section):
         run(*splitted[1:])
 
 def execute_rules():
-    data = yaml.load(open('rules.yaml'))
+    data = yaml.load(
+        open(helpers.get_file('rules.yaml')))
     for rule in data:
         name = rule.keys()[0]
         print "trying", name
@@ -51,8 +53,8 @@ def build_one(git_url, project_name):
         dir='.')
 
     sh.git('clone', git_url, tmp_dir_name)
-    os.chdir(tmp_dir_name)
-    execute_rules()
+    with helpers.pushd(tmp_dir_name):
+        execute_rules()
 
 def build_one_main(argv=None):
     if argv is None:
@@ -60,3 +62,17 @@ def build_one_main(argv=None):
     git_url, project_name = argv
 
     build_one(git_url, project_name)
+
+
+def test_sample_projects_main(argv=None):
+    if argv is None:
+        argv = sys.argv[1:]
+
+    data = yaml.load(
+        open(helpers.get_file('test_projects.yaml')))
+    for datum in data:
+        name = datum.keys()[0]
+        git_datum = datum[name][0]
+        assert git_datum.keys() == ['git path']
+        git_path = git_datum['git path']
+        build_one(git_path, name)

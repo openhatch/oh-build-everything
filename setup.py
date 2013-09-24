@@ -13,5 +13,9 @@ setup(
     entry_points = {
         'console_scripts': [
             'build_one = build_everything:build_one_main',
+            'test_sample_projects = build_everything:test_sample_projects_main',
             ]},
+    package_data = {
+        'rules': ['*.yaml'],
+        }
     )
