@@ -2,3 +2,5 @@
   - git path: https://github.com/openhatch/oh-build-everything.git
 - biopython:
   - git path: https://github.com/paulproteus/biopython.git
+- sl:
+  - git path: https://github.com/mtoyoda/sl.git

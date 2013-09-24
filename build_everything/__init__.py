@@ -22,18 +22,24 @@ def validate_contains(contains_section):
             return True
     return False
 
-def do_execute(section, print_output=False):
+def do_execute(section, project_name, print_output=False):
     assert section.keys() == ['execute']
     for item in strings_or_list(
         section['execute']):
         print "executing:", item
         # hacky sh parsing
         splitted = item.split(' ')
+        first, rest = splitted[0], splitted[1:]
+        for i, item in enumerate(rest):
+            if '{{project_name}}' in item:
+                print 'Replacing text...'
+                item = item.replace('{{project_name}}', project_name)
+                rest[i] = item
         run = sh.Command(splitted[0])
-        p = run(*splitted[1:], **helpers.add_printing_args(print_output))
+        p = run(*rest, **helpers.add_printing_args(print_output))
         p.wait()
 
-def execute_rules(print_output):
+def execute_rules(print_output, project_name):
     data = yaml.load(
         open(helpers.get_file('rules.yaml')))
     for rule in data:
@@ -43,7 +49,9 @@ def execute_rules(print_output):
         if validate_contains(contains):
             print "Found a match because directory contains:", (
                 contains,)
-            do_execute(rule[name][1], print_output=print_output)
+            do_execute(rule[name][1],
+                       project_name=project_name,
+                       print_output=print_output)
 
 
 def build_one(git_url, project_name, print_output=False):
@@ -56,7 +64,7 @@ def build_one(git_url, project_name, print_output=False):
     process = sh.git('clone', git_url, tmp_dir_name, **helpers.add_printing_args(print_output))
     process.wait()
     with helpers.pushd(tmp_dir_name):
-        execute_rules(print_output)
+        execute_rules(print_output, project_name)
 
 def build_one_main(argv=None):
     if argv is None:

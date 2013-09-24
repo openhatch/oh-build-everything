@@ -1,7 +1,7 @@
 - simple make rule:
   - contains: Makefile
   - execute:
-    - sudo apt-get build-dep {{package_name}}
+    - sudo apt-get build-dep {{project_name}}
     - make
   - success:
      - "**.o"
