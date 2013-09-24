@@ -22,7 +22,7 @@ def validate_contains(contains_section):
             return True
     return False
 
-def do_execute(section):
+def do_execute(section, print_output=False):
     assert section.keys() == ['execute']
     for item in strings_or_list(
         section['execute']):
@@ -30,9 +30,10 @@ def do_execute(section):
         # hacky sh parsing
         splitted = item.split(' ')
         run = sh.Command(splitted[0])
-        run(*splitted[1:])
+        p = run(*splitted[1:], **helpers.add_printing_args(print_output))
+        p.wait()
 
-def execute_rules():
+def execute_rules(print_output):
     data = yaml.load(
         open(helpers.get_file('rules.yaml')))
     for rule in data:
@@ -42,26 +43,27 @@ def execute_rules():
         if validate_contains(contains):
             print "Found a match because directory contains:", (
                 contains,)
-            do_execute(rule[name][1])
+            do_execute(rule[name][1], print_output=print_output)
 
 
-def build_one(git_url, project_name):
+def build_one(git_url, project_name, print_output=False):
     project_name_sanitized = re.sub(r'[^a-zA-Z]', '', project_name)
 
     tmp_dir_name = tempfile.mkdtemp(
         prefix='tmp_build_' + project_name_sanitized,
         dir='.')
 
-    sh.git('clone', git_url, tmp_dir_name)
+    process = sh.git('clone', git_url, tmp_dir_name, **helpers.add_printing_args(print_output))
+    process.wait()
     with helpers.pushd(tmp_dir_name):
-        execute_rules()
+        execute_rules(print_output)
 
 def build_one_main(argv=None):
     if argv is None:
         argv = sys.argv[1:]
     git_url, project_name = argv
 
-    build_one(git_url, project_name)
+    build_one(git_url, project_name, print_output=True)
 
 
 def test_sample_projects_main(argv=None):
@@ -75,4 +77,4 @@ def test_sample_projects_main(argv=None):
         git_datum = datum[name][0]
         assert git_datum.keys() == ['git path']
         git_path = git_datum['git path']
-        build_one(git_path, name)
+        build_one(git_path, name, print_output=True)
