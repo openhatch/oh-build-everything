@@ -30,7 +30,7 @@
   - execute:
     - sudo apt-get install python-virtualenv
     - virtualenv .
-    - python setup.py develop
+    - bin/python setup.py develop
 - other virtualenv rule:
    - contains: requirements.txt
    - execute:
