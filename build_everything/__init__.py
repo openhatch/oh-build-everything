@@ -21,6 +21,16 @@ def validate_contains(contains_section):
             return True
     return False
 
+def do_execute(section):
+    assert section.keys() == ['execute']
+    for item in strings_or_list(
+        section['execute']):
+        print "executing:", item
+        # hacky sh parsing
+        splitted = item.split(' ')
+        run = sh.Command(splitted[0])
+        run(*splitted[1:])
+
 def execute_rules():
     data = yaml.load(open('rules.yaml'))
     for rule in data:
@@ -28,7 +38,9 @@ def execute_rules():
         print "trying", name
         contains = rule[name][0]
         if validate_contains(contains):
-            print "Whoa, we found a match"
+            print "Found a match because directory contains:", (
+                contains,)
+            do_execute(rule[name][1])
 
 
 def build_one(git_url, project_name):
