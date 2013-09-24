@@ -8,5 +8,5 @@ install:
   - bin/python setup.py develop
 # command to run tests
 script:
-  - ./bin/build_one . build_everything
+  - ./bin/test_sample_projects
 
