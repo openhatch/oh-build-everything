@@ -6,6 +6,7 @@ install:
   - deactivate
   - virtualenv .
   - bin/python setup.py develop
+  - sudo apt-get build-dep python-biopython
 # command to run tests
 script:
   - ./bin/test_sample_projects
