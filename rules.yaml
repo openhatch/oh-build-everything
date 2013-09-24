@@ -1,0 +1,47 @@
+- simple make rule:
+  - contains: Makefile
+  - execute:
+    - sudo apt-get build-dep {{package_name}}
+    - make
+  - success:
+     - "**.o"
+- autoconf configure:
+  - contains: configure
+  - execute:
+    - ./configure
+  - goto:
+    - simple make rule
+- autoconf autogen:
+  - contains:
+    - autogen.sh
+  - execute:
+    - ./autogen.sh
+  - goto:
+    - autoconf configure
+- autoconf bootstrap:
+  - contains:
+    - bootstrap
+  - execute:
+    - ./bootstrap
+  - goto:
+    - autoconf configure
+- simple virtualenv rule:
+  - contains: setup.py
+  - execute:
+    - sudo apt-get install python-virtualenv
+    - virtualenv .
+    - python setup.py develop
+- other virtualenv rule:
+   - contains: requirements.txt
+   - execute:
+       - sudo apt-get install python-virtualenv
+       - virtualenv .
+       - bin/pip install -r requirements.txt
+- Django web app rule:
+  - contains: "**/manage.py"
+  - execute:
+    - bin/python **/manage.py runserver &
+  - success:
+    - listening port:
+      - 8000
+
