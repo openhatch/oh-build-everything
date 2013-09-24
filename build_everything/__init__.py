@@ -35,7 +35,7 @@ def build_one(git_url, project_name):
     project_name_sanitized = re.sub(r'[^a-zA-Z]', '', project_name)
 
     tmp_dir_name = tempfile.mkdtemp(
-        prefix='build_' + project_name_sanitized,
+        prefix='tmp_build_' + project_name_sanitized,
         dir='.')
 
     sh.git('clone', git_url, tmp_dir_name)
