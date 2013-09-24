@@ -5,7 +5,7 @@ python:
 install:
   - deactivate
   - virtualenv .
-  - python setup.py develop
+  - bin/python setup.py develop
 # command to run tests
 script:
   - ./bin/build_one . build_everything
